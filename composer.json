@@ -1,0 +1,17 @@
+{
+	"name": "vera/projettodolistpoissy",
+	"autoload": {
+		"psr-4": {
+			"App\\": "src/",
+			"Config\\": "config/"
+		}
+	},
+	"authors": [
+		{
+			"name": "vera"
+		}
+	],
+	"require": {
+		"ext-pdo": "*"
+	}
+}
