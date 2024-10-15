@@ -5,6 +5,7 @@ namespace App\Models;
 use Config\Database;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Exception\Exception;
+use MongoDB\Driver\Query;
 
 class Pokemon
 {
@@ -71,7 +72,7 @@ class Pokemon
         return $this->description;
     }
 
-    public function save()
+    public function save(): bool
     {
         $mongo = Database::getConnection();
         $dataBase = "pokemon_db";
@@ -96,6 +97,35 @@ class Pokemon
             return true;
         } catch (Exception $e){
             return false;
+        }
+    }
+
+    public function getAll()
+    {
+        $mongo = Database::getConnection();
+        $dataBase = "pokemon_db";
+        $collection = "pokemons";
+
+        // Préparer la requête pour récupérer tous les documents
+        $query = new Query([]);
+        $pokemons = [];
+
+        try {
+            // Exécuter la requête
+            $cursor = $mongo->executeQuery($dataBase . "." . $collection, $query);
+
+            // Récupérer les résultats
+            $results = $cursor->toArray();
+
+            foreach ($results as $data) {
+                $pokemons[] = new Pokemon($data->_id, $data->name, $data->type, $data->level, $data->description);
+            }
+
+            return $pokemons;
+
+        }catch (Exception $e){
+            // Retourner un tableau vide en cas d'erreur
+            return [];
         }
     }
 }
