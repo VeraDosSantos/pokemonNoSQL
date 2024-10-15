@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use Config\Database;
+use MongoDB\Driver\BulkWrite;
+use MongoDB\Driver\Exception\Exception;
+
 class Pokemon
 {
     protected ?string $id;
@@ -65,5 +69,33 @@ class Pokemon
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+
+    public function save()
+    {
+        $mongo = Database::getConnection();
+        $dataBase = "pokemon_db";
+        $collection = "pokemons";
+
+        // Préparer les données du Pokémon à insérer
+        $data = [
+            "name" => $this->name,
+            "type" => $this->type,
+            "level" => $this->level,
+            "description" => $this->description
+        ];
+
+        //creation d'un objet
+        $bulk = new BulkWrite();
+        //insere le document dans la base
+        $bulk->insert($data);
+
+        try {
+            //Executer la requete
+            $mongo->executeBulkWrite($dataBase . "." . $collection, $bulk);
+            return true;
+        } catch (Exception $e){
+            return false;
+        }
     }
 }
