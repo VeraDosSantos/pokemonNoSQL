@@ -1,0 +1,12 @@
+.myBody{
+    background-image: url(../img/fond.jpeg);
+    min-height: 700px;
+    background-size: cover;
+    background-attachment: fixed;
+    padding: 20px;
+    padding-bottom: 80px;
+}
+
+.myCard{
+    background-color: rgba(255, 255, 255, 0.91);
+}

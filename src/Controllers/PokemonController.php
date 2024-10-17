@@ -7,6 +7,19 @@ use App\Utils\AbstractController;
 
 class PokemonController extends AbstractController
 {
+    public function getPokemon(){
+        if ($_GET['id']) {
+            $idPokemon = $_GET['id'];
+            $pokemon = new Pokemon($idPokemon, null, null, null, null);
+            $myPokemon = $pokemon->getById();
+            if ($myPokemon) {
+                require_once __DIR__ . '/../Views/pokemon/pokemon.view.php';
+            }else{
+                $this->redirectToRoute('/');
+            }
+        }
+    }
+
     public function addPokemon()
     {
         if(isset($_POST["name"])){
@@ -33,9 +46,63 @@ class PokemonController extends AbstractController
                     echo "Erreur lors de l'ajout du Pokémon.";
                 }
             }
-
-
         }
         require_once (__DIR__ . "/../Views/pokemon/createPokemon.view.php");
+    }
+
+    public function updatePokemon()
+    {
+        if ($_GET['id']) {
+            $idPokemon = $_GET['id'];
+            $pokemon = new Pokemon($idPokemon, null, null, null, null);
+            $myPokemon = $pokemon->getById();
+
+            if ($myPokemon) {
+                if (isset($_POST['name'])) {
+                    // Récupérer les données du formulaire
+                    $name = $_POST['name'];
+                    $type = $_POST['type'];
+                    $level = $_POST['level'];
+                    $description = $_POST['description'] ?? '';
+
+                    // Valider les données (par exemple, vérifier que les champs ne sont pas vides)
+                    $this->check('name', $name);
+                    $this->check('type', $type);
+                    $this->check('level', $level);
+
+                    if (empty($this->arrayError)) {
+
+                        // Créer une instance de Pokémon avec les données mises à jour
+                        $pokemon = new Pokemon($idPokemon, $name, $type, $level, $description);
+                        // Appeler la méthode update()
+                        if ($pokemon->update()) {
+                            // Rediriger ou afficher un message de succès
+                            $this->redirectToRoute('/');
+                        } else {
+                            // Gérer l'erreur de mise à jour
+                            echo "Erreur lors de la mise à jour du Pokémon.";
+                        }
+                    }
+                }
+                require_once __DIR__ . '/../Views/pokemon/updatePokemon.view.php';
+            }
+        }
+    }
+
+    public function deletePokemon()
+    {
+        if (isset($_POST['id'])) {
+            $idPokemon = $_POST['id'];
+            $pokemon = new Pokemon($idPokemon, null, null, null, null);
+
+            // Appeler la méthode delete()
+            if ($pokemon->delete()) {
+                // Rediriger ou afficher un message de succès
+                $this->redirectToRoute('/'); // Par exemple, redirige vers la liste
+            } else {
+                // Gérer l'erreur de suppression
+                echo "Erreur lors de la suppression du Pokémon.";
+            }
+        }
     }
 }

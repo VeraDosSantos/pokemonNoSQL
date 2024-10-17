@@ -1,6 +1,7 @@
-<footer class="text-center text-light myFooter">
-    <div class="text-center p-3">
-        © Copyright : nanaplouf <?php echo date("Y") ?>
+</div>
+<footer class="text-center">
+    <div class="text-center text-secondary fst-italic p-3">
+        © Copyright : nanaplouf <?= date("Y") ?>
     </div>
 </footer>
 </body>
